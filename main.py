@@ -37,7 +37,11 @@ def insert_data_in_suppliers():
             product = [j.replace("'", "''") for j in i['products']]
             updated_data_for_suppliers = f"""UPDATE products SET suppliers_id = {i['id']} WHERE product_name in ('{"', '".join(product)}');\n """
             file.write(updated_data_for_suppliers)
-        file.write("""ALTER TABLE  products
+        file.write("""
+        ALTER TABLE products ADD COLUMN suppliers_id INTEGER;
+ALTER TABLE ONLY products
+    ADD CONSTRAINT pk_products PRIMARY KEY (product_id);
+        ALTER TABLE  products
     ADD CONSTRAINT fk_product_id FOREIGN KEY (suppliers_id) REFERENCES suppliers(suppliers_id);""")
 
 
