@@ -1,8 +1,5 @@
 import psycopg2
-import csv
-import pandas
 import json
-import requests
 
 
 def db_connecting():
@@ -28,22 +25,28 @@ def get_data_s():
         data = json.load(file)
     for i in range(len(data)):
         data[i]['id'] = i+1
+        print(data)
     return data
 
 def insert_data_in_suppliers():
     data = get_data_s()
     with open("file.sql", 'w', encoding='utf-8') as file:
+        file.write(""" ALTER TABLE products ADD COLUMN suppliers_id INTEGER;""")
         for i in data:
             product = [j.replace("'", "''") for j in i['products']]
             updated_data_for_suppliers = f"""UPDATE products SET suppliers_id = {i['id']} WHERE product_name in ('{"', '".join(product)}');\n """
             file.write(updated_data_for_suppliers)
         file.write("""
-        ALTER TABLE products ADD COLUMN suppliers_id INTEGER;
 ALTER TABLE ONLY products
-    ADD CONSTRAINT pk_products PRIMARY KEY (product_id);
         ALTER TABLE  products
-    ADD CONSTRAINT fk_product_id FOREIGN KEY (suppliers_id) REFERENCES suppliers(suppliers_id);""")
+    ADD CONSTRAINT fk_product_id FOREIGN KEY (suppliers_id) REFERENCES suppliers(suppliers_id);\n""")
 
+    with open('file.sql', 'a', encoding='utf-8') as file:
+        for i in data:
+            file.write(f"""INSERT INTO suppliers VALUES ({i['id']}, '{i['company_name'].replace("'", '')}', '{i['contact'].split(',')[0]}', '{i['contact'].split(',')[1]}','{i['address'].split(';')[0].strip(';')}','{i['address'].split(';')[1].strip(';')}','{i['address'].split(';')[2].strip(';')}','{i['address'].split(';')[3].strip(';')}','{i['address'].split(';')[4].replace("'", '')}', '{i['phone']}','{i['fax'] if len(i['fax'])>0 else 0}','{i['homepage'].replace("'", '') if len(i['homepage'])>0 else 0}');\n""")
+
+
+#Заполнить таблицу саплаерс
 
 
 def main():
@@ -54,3 +57,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
