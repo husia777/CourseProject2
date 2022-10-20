@@ -2,23 +2,6 @@ import psycopg2
 import json
 
 
-def db_connecting():
-    """
-    Функция подключения к базе данных
-    :return: Возвращает
-    """
-    try:
-        connection = psycopg2.connect(user="postgres"
-                                      , password="postgres"
-                                      , host="127.0.0.1"
-                                      , port="5432"
-                                      ,database="course_project")
-        connection.autocommit = True
-        print('Подключение к базе данных установленно')
-        return connection
-    except:
-        print('Ошибка подключение')
-        return False
 
 def get_data_s():
     with open('suppliers.json', 'r', encoding='utf-8') as file:
@@ -46,8 +29,6 @@ def insert_data_in_suppliers():
 
 
 def main():
-    conn = db_connecting()
-    cursor = conn.cursor()
     get_data_s()
     insert_data_in_suppliers()
 

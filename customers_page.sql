@@ -1,8 +1,7 @@
 SELECT COUNT(*) FROM  customers;  --1команда
 
 SELECT  DISTINCT city ,  country FROM  customers    --2команда
-SELECT  orders.ship_name, employees.last_name, employees.first_name
-FROM  employees;
+
 
 SELECT customers.company_name, employees.first_name, employees.last_name
 FROM employees
@@ -14,7 +13,7 @@ AND shippers.company_name = 'Speedy Express'; --3команда!
 
 
 
- SELECT contact_name, order_id
+SELECT contact_name, order_id
 FROM customers
 LEFT JOIN orders USING (customer_id)
 WHERE order_id IS NULL-- 4 ЗАПРОС
